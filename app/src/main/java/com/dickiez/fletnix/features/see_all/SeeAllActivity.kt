@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.dickiez.fletnix.core.base.BaseActivity
+import com.dickiez.fletnix.core.constants.ContentSection
 import com.dickiez.fletnix.core.constants.MediaType
 import com.dickiez.fletnix.databinding.ActivitySeeAllBinding
 import com.dickiez.fletnix.utils.Tools
@@ -18,6 +18,7 @@ class SeeAllActivity : BaseActivity() {
   private lateinit var viewModel: SeeAllViewModel
 
   private lateinit var mediaType: MediaType
+  private lateinit var section: ContentSection
   private lateinit var adapter: SeeAllAdapter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,45 +26,47 @@ class SeeAllActivity : BaseActivity() {
     binding = ActivitySeeAllBinding.inflate(layoutInflater)
     setContentView(binding.root)
     viewModel = ViewModelProvider(this)[SeeAllViewModel::class.java]
-    mediaType = MediaType.valueOf(intent.getStringExtra(MEDIA_TYPE)!!)
+    initTypeAndSection()
     setupRecyclerView()
     viewModel.getAllData()
-
     viewModel.seeAllData.observe(this) {
       if (it.isNotEmpty()) {
         if (viewModel.page > 1) {
           adapter.addAll(it)
-          adapter.setIsLoadingMore(false)
         } else {
           adapter.setData(it)
         }
       }
     }
+
+    viewModel.isLoadingMore.observe(this) { adapter.setIsLoadingMore(it) }
+  }
+
+  private fun initTypeAndSection() {
+    mediaType = MediaType.valueOf(intent.getStringExtra(MEDIA_TYPE)!!)
+    section = ContentSection.valueOf(intent.getStringExtra(SECTION)!!)
+    viewModel.setMediaType(mediaType)
+    viewModel.setContentSection(section)
   }
 
   private fun setupRecyclerView() {
     adapter = SeeAllAdapter(mediaType)
     binding.recyclerViewSeeAll.adapter = adapter
-    adapter.addOnItemClick {
-      Tools.debug("ITEM CLICK", it.id.toString())
-    }
-    binding.recyclerViewSeeAll.layoutManager?.let {
-      adapter.addLoadMoreListener(it) {
-        Tools.debug("PAGE", viewModel.page.toString())
-        Tools.debug("LAST PAGE", viewModel.lastPage.toString())
-        if (viewModel.page < viewModel.lastPage) {
-          viewModel.getAllData()
-          adapter.setIsLoadingMore(true)
-        }
+    adapter.addOnItemClick { Tools.debug("ITEM CLICK", it.id.toString()) }
+    adapter.addLoadMoreListener {
+      if (viewModel.page < viewModel.lastPage) {
+        viewModel.getAllData()
       }
     }
   }
 
   companion object {
-    const val MEDIA_TYPE = "MEDIA_TYPE"
-    fun open(mediaType: MediaType, context: Context) {
+    private const val MEDIA_TYPE = "MEDIA_TYPE"
+    private const val SECTION = "SECTION"
+    fun open(mediaType: MediaType, section: ContentSection, context: Context) {
       val intent = Intent(context, SeeAllActivity::class.java)
       intent.putExtra(MEDIA_TYPE, mediaType.name)
+      intent.putExtra(SECTION, section.name)
       context.startActivity(intent)
     }
   }

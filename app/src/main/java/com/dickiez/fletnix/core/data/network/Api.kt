@@ -19,29 +19,32 @@ interface Api {
   suspend fun getTrending(
     @Path("media_type") mediaType: String,
     @Path("time_window") timeWindow: String,
+    @Query("page") page: Int = 1,
     @Query("api_key") apiKey: String,
   ): Response<ContentResponse>
 
   @GET("discover/movie")
   suspend fun getDiscoverMovies(
     @Query("api_key") apiKey: String,
-    @Query("page") page: Int,
+    @Query("page") page: Int = 1,
   ): Response<ContentResponse>
 
   @GET("discover/tv")
   suspend fun getDiscoverTVShows(
     @Query("api_key") apiKey: String,
-    @Query("page") page: Int,
+    @Query("page") page: Int = 1,
   ): Response<ContentResponse>
 
-  @GET("movie/top_rated")
-  suspend fun getTopRatedMovies(
+  @GET("movie/popular")
+  suspend fun getPopularMovies(
     @Query("api_key") apiKey: String,
+    @Query("page") page: Int = 1,
   ): Response<ContentResponse>
 
-  @GET("tv/top_rated")
-  suspend fun getTopRatedTVShows(
+  @GET("tv/popular")
+  suspend fun getPopularTVShows(
     @Query("api_key") apiKey: String,
+    @Query("page") page: Int = 1,
   ): Response<ContentResponse>
 
 }

@@ -34,26 +34,26 @@ class MainRepository @Inject constructor(private val api: Api) {
     result: (ApiResult<ContentResponse>) -> Unit
   ) = ApiService.call(result) {
     api.getDiscoverMovies(
-      apiKey = Constant.TMDB_API_KEY, 1
+      apiKey = Constant.TMDB_API_KEY
     )
   }
   suspend fun getDiscoverTVShows(
     result: (ApiResult<ContentResponse>) -> Unit
   ) = ApiService.call(result) {
     api.getDiscoverTVShows(
-      apiKey = Constant.TMDB_API_KEY, 1
+      apiKey = Constant.TMDB_API_KEY
     )
   }
 
   suspend fun getTopRatedMovies(
     result: (ApiResult<ContentResponse>) -> Unit
   ) = ApiService.call(result) {
-    api.getTopRatedMovies(apiKey = Constant.TMDB_API_KEY)
+    api.getPopularMovies(apiKey = Constant.TMDB_API_KEY)
   }
 
   suspend fun getTopRatedTVShows(
     result: (ApiResult<ContentResponse>) -> Unit)
   = ApiService.call(result) {
-    api.getTopRatedTVShows(apiKey = Constant.TMDB_API_KEY)
+    api.getPopularTVShows(apiKey = Constant.TMDB_API_KEY)
   }
 }

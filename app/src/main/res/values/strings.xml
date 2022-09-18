@@ -16,4 +16,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="trending">Trending</string>
     <string name="discover">Discover</string>
+    <string name="see_all">See All</string>
 </resources>

@@ -37,7 +37,7 @@ class ContentSectionAdapter : InfinityScrollAdapter<Banner, RecyclerView.ViewHol
   }
 
   override fun getItemViewType(position: Int): Int {
-    return if (isLoadingMore) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+    return if (isIndexLoadingMore(position)) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

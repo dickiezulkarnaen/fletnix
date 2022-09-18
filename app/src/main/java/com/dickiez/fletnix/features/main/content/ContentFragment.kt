@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.text.toLowerCase
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.dickiez.fletnix.core.constants.ContentSection
 import com.dickiez.fletnix.core.constants.MediaType
 import com.dickiez.fletnix.core.data.models.Banner
 import com.dickiez.fletnix.databinding.FragmentContentBinding
@@ -59,8 +61,12 @@ class ContentFragment private constructor() : Fragment() {
         viewModel.tvDiscover.observeDiscoverSection()
       }
     }
-    binding.textViewLabelDiscover.setOnClickListener {
-      context?.let { c -> SeeAllActivity.open(mediaType, c) }
+    binding.textViewSeeAllDiscover.setOnClickListener {
+      gotoSeeAllPage(ContentSection.DISCOVER)
+    }
+
+    binding.textViewSeeAllTrending.setOnClickListener {
+      gotoSeeAllPage(ContentSection.TRENDING)
     }
     return binding.root
   }
@@ -133,8 +139,6 @@ class ContentFragment private constructor() : Fragment() {
     }
   }
 
-  private fun runSliderJob() = viewPagerCallback.onPageSelected(binding.viewPagerCarousel.currentItem)
-
   private fun setupTrendingSection() {
     binding.recyclerViewTrending.adapter = ContentSectionAdapter()
   }
@@ -142,6 +146,14 @@ class ContentFragment private constructor() : Fragment() {
   private fun setupDiscoverSection() {
     binding.recyclerViewDiscover.adapter = ContentSectionAdapter()
   }
+
+  private fun gotoSeeAllPage(section: ContentSection) {
+    context?.let { ctx ->
+      SeeAllActivity.open(mediaType, section, ctx)
+    }
+  }
+
+  private fun runSliderJob() = viewPagerCallback.onPageSelected(binding.viewPagerCarousel.currentItem)
 
   private fun cancelSliderJob() {
     sliderJob?.cancel()

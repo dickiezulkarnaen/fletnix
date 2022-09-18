@@ -15,7 +15,6 @@ import com.dickiez.fletnix.core.constants.BackDropSize
 import com.dickiez.fletnix.core.constants.Constant
 import com.dickiez.fletnix.core.constants.MediaType
 import com.dickiez.fletnix.core.data.models.ContentResult
-import com.dickiez.fletnix.databinding.ItemCarouselBinding
 import com.dickiez.fletnix.databinding.ItemLoadingBinding
 import com.dickiez.fletnix.databinding.ItemSeeAllContentBinding
 import com.dickiez.fletnix.widgets.InfinityScrollAdapter
@@ -45,7 +44,7 @@ class SeeAllAdapter(private val mediaType: MediaType) : InfinityScrollAdapter<Co
   }
 
   override fun getItemViewType(position: Int): Int {
-    return if (isLoadingMore) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+    return if (isIndexLoadingMore(position)) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
   }
 
   inner class Holder(private val binding: ItemSeeAllContentBinding) : RecyclerView.ViewHolder(binding.root) {

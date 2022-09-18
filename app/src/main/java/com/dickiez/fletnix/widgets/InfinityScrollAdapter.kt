@@ -10,7 +10,7 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.*
 
-abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> protected constructor(
+abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> constructor(
   diffCallback: DiffUtil.ItemCallback<T>
 ) : RecyclerView.Adapter<VH>() {
 
@@ -18,8 +18,25 @@ abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> protected 
   private var data : ArrayList<AdapterItem<T>> = arrayListOf()
   private var recyclerView : RecyclerView? = null
   private var loadMoreListener : OnLoadMoreListener? = null
+  private var loadMoreIndex : Int? = null
 
   protected var onItemClick : (T) -> Unit = {}
+
+  init {
+    differ = AsyncListDiffer(
+      AdapterListUpdateCallback(this),
+      AsyncDifferConfig.Builder(diffCallback).build()
+    )
+  }
+
+  fun isIndexLoadingMore(index: Int): Boolean {
+    return if (loadMoreIndex != null) {
+      val item = data[index]
+      item.viewType == ViewType.LOAD_MORE
+    } else false
+  }
+
+  override fun getItemCount(): Int = data.size
 
   @SuppressLint("NotifyDataSetChanged")
   fun setData(data : ArrayList<T>) {
@@ -29,15 +46,17 @@ abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> protected 
     loadMoreListener?.stopLoading()
   }
 
+  @SuppressLint("NotifyDataSetChanged")
   fun addAll(data: ArrayList<T>) {
     this.data.addAll(data.map { AdapterItem(ViewType.DATA_ITEM, it) })
-    notifyItemInserted(data.lastIndex)
+    notifyDataSetChanged()
     loadMoreListener?.stopLoading()
   }
 
   fun addItem(item: T) {
+    val lastIndex = data.lastIndex
     this.data.add(AdapterItem(ViewType.DATA_ITEM, item))
-    notifyItemInserted(data.lastIndex)
+    notifyItemInserted(lastIndex)
   }
 
   fun addOnItemClick(onClick : (T) -> Unit) {
@@ -45,19 +64,19 @@ abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> protected 
   }
 
   fun addLoadMoreListener(
-    layoutManager: RecyclerView.LayoutManager,
     visibleThreshold: Int = 10,
-    scrollDirection: OnLoadMoreListener.Direction = OnLoadMoreListener.Direction.DOWN,
-    onLoadMore: () -> Unit
+    direction: OnLoadMoreListener.Direction = OnLoadMoreListener.Direction.DOWN,
+    callback: () -> Unit
   ) {
-    recyclerView?.addOnScrollListener(
-      OnLoadMoreListener(
-        layoutManager,
+    if (recyclerView?.layoutManager != null) {
+      loadMoreListener = OnLoadMoreListener(
+        recyclerView?.layoutManager!!,
         visibleThreshold,
-        scrollDirection,
-        onLoadMore
+        direction,
+        callback
       )
-    )
+      recyclerView?.addOnScrollListener(loadMoreListener!!)
+    } else throw Exception("Please attach RecyclerView and it's LayoutManager first to use LoadMoreListener")
   }
 
   fun getData() : List<T?> = data.map { it.item }
@@ -67,11 +86,22 @@ abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> protected 
     return data[position].item
   }
 
-  fun setIsLoadingMore(isLoadingMore : Boolean) {
-    if (isLoadingMore) {
-      data.add(AdapterItem(ViewType.LOAD_MORE, null))
-    } else {
+  @SuppressLint("NotifyDataSetChanged")
+  fun setIsLoadingMore(value : Boolean) {
+    if (value) addLoadingItem() else removeLoadingItem()
+    notifyDataSetChanged()
+  }
+
+  private fun addLoadingItem() {
+    if (loadMoreIndex == null) data.add(AdapterItem(ViewType.LOAD_MORE, null))
+    loadMoreIndex = data.lastIndex
+  }
+
+  private fun removeLoadingItem() {
+    loadMoreIndex?.let { index ->
       data.removeAt(data.indexOfLast { it.viewType == ViewType.LOAD_MORE })
+      notifyItemRemoved(index)
+      loadMoreIndex = null
     }
   }
 
@@ -80,24 +110,12 @@ abstract class InfinityScrollAdapter<T, VH : RecyclerView.ViewHolder> protected 
     this.recyclerView = recyclerView
   }
 
-  override fun getItemCount(): Int = data.size
-
-  val isLoadingMore: Boolean get() = data.last().viewType == ViewType.LOAD_MORE
-
+  /* Support Classes */
   class LoadingHolder(view : View) : RecyclerView.ViewHolder(view)
-
   class AdapterItem<T>(var viewType: ViewType, var item: T?)
-
   enum class ViewType {
     LOAD_MORE,
     DATA_ITEM,
-  }
-
-  init {
-    differ = AsyncListDiffer(
-      AdapterListUpdateCallback(this),
-      AsyncDifferConfig.Builder(diffCallback).build()
-    )
   }
 
 }

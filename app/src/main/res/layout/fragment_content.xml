@@ -37,6 +37,18 @@
             app:layout_constraintStart_toStartOf="@id/view_pager_carousel"
             app:layout_constraintTop_toBottomOf="@id/view_pager_carousel" />
 
+        <TextView
+            android:id="@+id/text_view_see_all_trending"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/see_all"
+            app:layout_constraintTop_toTopOf="@id/text_view_label_trending"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_trending"
             android:layout_width="0dp"
@@ -64,6 +76,18 @@
             app:layout_constraintEnd_toEndOf="@id/recycler_view_trending"
             app:layout_constraintStart_toStartOf="@id/recycler_view_trending"
             app:layout_constraintTop_toBottomOf="@id/recycler_view_trending" />
+
+        <TextView
+            android:id="@+id/text_view_see_all_discover"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/see_all"
+            app:layout_constraintTop_toTopOf="@id/text_view_label_discover"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_discover"
