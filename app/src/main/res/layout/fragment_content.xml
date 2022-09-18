@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".features.main.content.ContentFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingBottom="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager_carousel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:items="layout/item_carousel" />
+
+        <TextView
+            android:id="@+id/text_view_label_trending"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/trending"
+            app:layout_constraintEnd_toEndOf="@id/view_pager_carousel"
+            app:layout_constraintStart_toStartOf="@id/view_pager_carousel"
+            app:layout_constraintTop_toBottomOf="@id/view_pager_carousel" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_trending"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_label_trending" />
+
+        <TextView
+            android:id="@+id/text_view_label_discover"
+            android:layout_width="0dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/discover"
+            app:layout_constraintEnd_toEndOf="@id/recycler_view_trending"
+            app:layout_constraintStart_toStartOf="@id/recycler_view_trending"
+            app:layout_constraintTop_toBottomOf="@id/recycler_view_trending" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_discover"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_label_discover" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
