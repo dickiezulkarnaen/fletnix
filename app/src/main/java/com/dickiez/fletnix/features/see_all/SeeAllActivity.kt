@@ -8,6 +8,7 @@ import com.dickiez.fletnix.core.base.BaseActivity
 import com.dickiez.fletnix.core.constants.ContentSection
 import com.dickiez.fletnix.core.constants.MediaType
 import com.dickiez.fletnix.databinding.ActivitySeeAllBinding
+import com.dickiez.fletnix.features.main.content_detail.DetailContentActivity
 import com.dickiez.fletnix.utils.Tools
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,7 +53,9 @@ class SeeAllActivity : BaseActivity() {
   private fun setupRecyclerView() {
     adapter = SeeAllAdapter(mediaType)
     binding.recyclerViewSeeAll.adapter = adapter
-    adapter.addOnItemClick { Tools.debug("ITEM CLICK", it.id.toString()) }
+    adapter.addOnItemClick {
+      DetailContentActivity.open(it.id ?: return@addOnItemClick, mediaType, this)
+    }
     adapter.addLoadMoreListener {
       if (viewModel.page < viewModel.lastPage) {
         viewModel.getAllData()

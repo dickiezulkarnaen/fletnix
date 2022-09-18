@@ -7,6 +7,7 @@
 package com.dickiez.fletnix.core.data.network
 
 import com.dickiez.fletnix.core.data.models.ContentResponse
+import com.dickiez.fletnix.core.data.models.DetailContent
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -46,5 +47,17 @@ interface Api {
     @Query("api_key") apiKey: String,
     @Query("page") page: Int = 1,
   ): Response<ContentResponse>
+
+  @GET("movie/{movie_id}")
+  suspend fun getDetailMovie(
+    @Path("movie_id") movieId : Int,
+    @Query("api_key") apiKey: String,
+  ): Response<DetailContent>
+
+  @GET("tv/{tv_id}")
+  suspend fun getDetailTVShows(
+    @Path("tv_id") movieId : Int,
+    @Query("api_key") apiKey: String,
+  ): Response<DetailContent>
 
 }

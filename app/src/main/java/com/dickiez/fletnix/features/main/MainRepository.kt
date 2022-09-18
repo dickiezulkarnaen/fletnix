@@ -26,7 +26,7 @@ class MainRepository @Inject constructor(private val api: Api) {
     api.getTrending(
       apiKey = Constant.TMDB_API_KEY,
       mediaType = mediaType.value,
-      timeWindow = timeWindow.value
+      timeWindow = timeWindow.name.lowercase()
     )
   }
 

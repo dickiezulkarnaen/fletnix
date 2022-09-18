@@ -18,6 +18,7 @@ import com.dickiez.fletnix.core.constants.MediaType
 import com.dickiez.fletnix.core.data.models.Banner
 import com.dickiez.fletnix.databinding.FragmentContentBinding
 import com.dickiez.fletnix.features.main.MainViewModel
+import com.dickiez.fletnix.features.main.content_detail.DetailContentActivity
 import com.dickiez.fletnix.features.see_all.SeeAllActivity
 import com.dickiez.fletnix.utils.Tools
 import dagger.hilt.android.AndroidEntryPoint
@@ -106,7 +107,7 @@ class ContentFragment private constructor() : Fragment() {
 
   @SuppressLint("NotifyDataSetChanged")
   private fun setupCarousel() {
-    val carouselAdapter = CarouselViewAdapter(items = images)
+    val carouselAdapter = CarouselViewAdapter(items = images, ::gotoDetailPage)
     binding.viewPagerCarousel.adapter = carouselAdapter
     binding.viewPagerCarousel.setPageTransformer(transformManager())
     binding.viewPagerCarousel.registerOnPageChangeCallback(viewPagerCallback)
@@ -140,11 +141,23 @@ class ContentFragment private constructor() : Fragment() {
   }
 
   private fun setupTrendingSection() {
-    binding.recyclerViewTrending.adapter = ContentSectionAdapter()
+    val adapter = ContentSectionAdapter()
+    adapter.addOnItemClick(::gotoDetailPage)
+    binding.recyclerViewTrending.adapter = adapter
   }
 
   private fun setupDiscoverSection() {
-    binding.recyclerViewDiscover.adapter = ContentSectionAdapter()
+    val adapter = ContentSectionAdapter()
+    adapter.addOnItemClick(::gotoDetailPage)
+    binding.recyclerViewDiscover.adapter = adapter
+  }
+
+  private fun gotoDetailPage(banner: Banner) {
+    context?.let { ctx ->
+      banner.id?.let { id ->
+        DetailContentActivity.open( id, mediaType, ctx)
+      }
+    }
   }
 
   private fun gotoSeeAllPage(section: ContentSection) {

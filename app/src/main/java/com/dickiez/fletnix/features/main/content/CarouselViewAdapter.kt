@@ -17,10 +17,10 @@ import com.dickiez.fletnix.databinding.ItemCarouselBinding
 import com.dickiez.fletnix.utils.Tools
 
 
-class CarouselViewAdapter(private val items: ArrayList<Banner>) :
+class CarouselViewAdapter(private val items: ArrayList<Banner>, private val callback: (Banner) -> Unit) :
   RecyclerView.Adapter<CarouselViewAdapter.Holder>() {
 
-  class Holder(private val binding: ItemCarouselBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class Holder(private val binding: ItemCarouselBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Banner) {
       binding.textView.text = item.title
       val image = "${Constant.TMDB_IMAGE_BASE_URL}/${BackDropSize.W_780.value}${item.image}"
@@ -28,7 +28,7 @@ class CarouselViewAdapter(private val items: ArrayList<Banner>) :
         .load(image)
         .into(binding.imageView)
       binding.root.setOnClickListener {
-        Tools.debug("CLICK", item.title.toString())
+        callback(item)
       }
     }
   }

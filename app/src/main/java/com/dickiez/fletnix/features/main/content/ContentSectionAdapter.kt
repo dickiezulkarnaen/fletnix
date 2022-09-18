@@ -44,12 +44,13 @@ class ContentSectionAdapter : InfinityScrollAdapter<Banner, RecyclerView.ViewHol
     if (holder is Holder) getItem(position)?.let { holder.bind(it) }
   }
 
-  class Holder(private val binding : ItemContentSectionBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class Holder(private val binding : ItemContentSectionBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Banner) {
       val image = "${Constant.TMDB_IMAGE_BASE_URL}/${BackDropSize.W_300.value}${item.image}"
       Glide.with(binding.imageView.context)
         .load(image)
         .into(binding.imageView)
+      binding.root.setOnClickListener { onItemClick(item) }
     }
   }
 
